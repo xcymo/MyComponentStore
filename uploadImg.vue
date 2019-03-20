@@ -35,7 +35,7 @@
 		<div class="imgLoop">
 			<div class="imgBox" v-for="(item,index) in imgArr" :key="index">
 				<img class="loadedImg" :src="item.content">
-                <!-- 此图src为本地，请替换 -->
+				<!-- 此图src为本地，请替换 -->
 				<img
 					class="clear"
 					@click="deleteImg(index)"
@@ -48,8 +48,8 @@
 				accept="image/gif, image/jpeg, image/png, image/jpg"
 				multiple
 			>
-            <!-- 此图src为本地，请替换 -->
-				<img class="clickIcon" src="../assets/img/addImg.png"> 
+				<!-- 此图src为本地，请替换 -->
+				<img class="clickIcon" src="../assets/img/addImg.png">
 			</van-uploader>
 		</div>
 	</div>
@@ -58,7 +58,12 @@
 <script>
 export default {
 	props: ["imgArr"],
-
+	mounted() {
+		console.log(typeof this.imgArr);
+		if (typeof this.imgArr != "object") {
+			console.error("imgArr属性为必传项");
+		}
+	},
 	methods: {
 		onRead(file) {
 			this.$emit("changeImgArr", file);
