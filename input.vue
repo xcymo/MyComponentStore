@@ -6,6 +6,7 @@
     value       父元素的绑定值   仅做显示用   Number|String
     maxlength   最大输入长度   不设置则不限制   设置为负数则不可输入, Number|String
     type        输入类型   默认为password   可选项为number   String
+    caretColor 光标颜色   默认#333     String
 
     Event:
     change      每次输入时返回当前全部输入值和id   可直接替换使用     返回值:(value,id)
@@ -19,20 +20,26 @@
 				:placeholder="placeholder"
 				:value="value"
 				@input="onInput"
-			>
-			<img tapmode @click="clear" src="../assets/img/cancel.png">
-			<span class="split" v-show="toggleSee"></span>
-			<img
-				v-show="toggleSee&&!showPwd"
-				tapmode
-				@click="toggleHide"
-				src="../assets/img/hide.png"
+				:style="'caret-color:'+caretColor+';'"
 			>
 			<img
-				v-show="toggleSee&&showPwd"
+				tapmode
+				@click="clear"
+				v-show="value.length>0"
+				src="../static/img/cancel.png"
+			>
+			<span class="split" v-show="toggleSee&&value.length>0"></span>
+			<img
+				v-show="toggleSee&&!showPwd&&value.length>0"
+				tapmode
+				@click="toggleHide"
+				src="../static/img/hide.png"
+			>
+			<img
+				v-show="toggleSee&&showPwd&&value.length>0"
 				@click="toggleHide"
 				tapmode
-				src="../assets/img/hide2.png"
+				src="../static/img/hide2.png"
 			>
 		</div>
 	</div>
@@ -59,6 +66,9 @@ export default {
 		},
 		type: {
 			default: "password"
+		},
+		caretColor: {
+			default: "#333;"
 		}
 	},
 	data() {
@@ -68,7 +78,9 @@ export default {
 	},
 	mounted() {
 		if (!this.id) {
-			console.error("id属性为必传项,便于你在同时存在多个组件时区分它们");
+			console.error(
+				"id属性为必传项,便于您在于同时存在多个组件时区分它们"
+			);
 		}
 		if (this.type != "password" && this.type != "number") {
 			console.error(
