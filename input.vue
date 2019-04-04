@@ -6,7 +6,11 @@
     value       父元素的绑定值   仅做显示用   Number|String
     maxlength   最大输入长度   不设置则不限制   设置为负数则不可输入, Number|String
     type        输入类型   默认为password   可选项为number   String
-    caretColor 光标颜色   默认#333     String
+    caretColor  光标颜色   默认#333     String
+    disabled    是否禁用    默认false   Boolean
+    showClear   是否显示清除按钮    默认true    Boolean
+    limit       限制类型    可选number|text, text限制为仅限输入字母、数字、下划线      Boolean
+    
 
     Event:
     change      每次输入时返回当前全部输入值和id   可直接替换使用     返回值:(value,id)
@@ -20,12 +24,14 @@
 				:placeholder="placeholder"
 				:value="value"
 				@input="onInput"
+				pattern="\d*"
+				:disabled="disabled==true"
 				:style="'caret-color:'+caretColor+';'"
 			>
 			<img
 				tapmode
 				@click="clear"
-				v-show="value.length>0"
+				v-show="value.length>0&&showClear"
 				src="../static/img/cancel.png"
 			>
 			<span class="split" v-show="toggleSee&&value.length>0"></span>
@@ -47,7 +53,6 @@
 
 <script>
 export default {
-	props: ["toggleSee", "placeholder", "id", "value", "maxlength", "type"],
 	props: {
 		toggleSee: {
 			default: false
@@ -69,7 +74,14 @@ export default {
 		},
 		caretColor: {
 			default: "#333;"
-		}
+		},
+		disabled: {
+			default: false
+		},
+		showClear: {
+			default: true
+		},
+		limit: ""
 	},
 	data() {
 		return {
@@ -91,6 +103,16 @@ export default {
 	methods: {
 		onInput(e) {
 			let key = e.target.value;
+			if (this.limit == "number") {
+				let numReg = /\D/g;
+				key = key.replace(numReg, "");
+				e.target.value = key;
+			}
+			if (this.limit == "text") {
+				let numReg = /\W/g;
+				key = key.replace(numReg, "");
+				e.target.value = key;
+			}
 			if (this.maxlength && key.length > this.maxlength) {
 				e.target.value = key.substr(0, this.maxlength);
 				return;
