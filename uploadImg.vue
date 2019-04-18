@@ -36,7 +36,7 @@
 <script>
 export default {
 	props: {
-		imgArr: []
+		imgArr: ''
 	},
 	mounted() {
 		if (typeof this.imgArr != "object") {
