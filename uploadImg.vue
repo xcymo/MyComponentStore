@@ -23,13 +23,12 @@
 				<img class="loadedImg" :src="item.content">
 				<img class="clear" @click="deleteImg(index)" src="../static/img/clear.png">
 			</div>
-			<van-uploader
-				:after-read="onRead"
-				accept="image/gif, image/jpeg, image/png, image/jpg"
-				multiple
-			>
+
+			<label class="uploader_box" for="logimg">
+				<input type="file" id="logimg" accept="image/*" @change="onRead">
 				<img class="clickIcon" src="../static/img/addImg.png">
-			</van-uploader>
+			</label>
+
 		</div>
 	</div>
 </template>
@@ -37,17 +36,31 @@
 <script>
 export default {
 	props: {
-		imgArr: ""
+		imgArr: []
 	},
 	mounted() {
-		console.log(typeof this.imgArr);
 		if (typeof this.imgArr != "object") {
 			console.error("imgArr属性为必传项");
 		}
 	},
 	methods: {
 		onRead(file) {
-			this.$emit("changeImgArr", file);
+			let file2 = document.getElementById("logimg").files;
+			let file3 = {};
+			let reader = new FileReader();
+
+			file3 = [];
+			for (let i of file2) {
+				reader.readAsDataURL(i);
+				reader.onload = res => {
+					file3 = {
+						content: res.currentTarget.result,
+						file: i
+					};
+					this.$emit("changeImgArr", file3);
+				};
+			}
+			// this.$emit("changeImgArr", file);
 		},
 		deleteImg(index) {
 			this.$emit("deleteImg", index);
@@ -58,6 +71,18 @@ export default {
 
 <style lang="less">
 .UploadImgXCY {
+	.uploader_box {
+		height: auto;
+		overflow: hidden;
+		position: relative;
+	}
+	#logimg {
+		display: none;
+	}
+	.clickIcon {
+		width: 100%;
+		height: auto;
+	}
 	.clickIcon {
 		width: 19.2vw;
 		height: 19.2vw;
